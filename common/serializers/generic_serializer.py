@@ -14,7 +14,7 @@ class GenericErrorSerializer(serializers.Serializer):
 class ResponseSerializer(serializers.Serializer):
     code = serializers.IntegerField()
     status = serializers.CharField()
-    recordsTotal = serializers.IntegerField()
+    records_total = serializers.IntegerField()
     data = serializers.SerializerMethodField()
     error = GenericErrorSerializer(allow_null=True)
 

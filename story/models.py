@@ -9,7 +9,7 @@ class Story(models.Model):
     content = models.TextField()
     image = models.ImageField(upload_to='story/', null=True, blank=True)
     audio = models.ForeignKey(Song, on_delete=models.SET_NULL, null=True, blank=True)
-    reader_count = models.IntegerField()
+    reader_count = models.IntegerField(default=0)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

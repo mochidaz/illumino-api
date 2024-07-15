@@ -48,7 +48,7 @@ class JwtObtain(TokenObtainPairView):
         serializer = ResponseSerializer({
             'code': 200,
             'status': 'success',
-            'recordsTotal': 1,
+            'records_total': 1,
             'data': response.data,
             'error': None,
         })
@@ -65,7 +65,7 @@ class RefreshToken(TokenRefreshView):
         serializer = ResponseSerializer({
             'code': 200,
             'status': 'success',
-            'recordsTotal': 1,
+            'records_total': 1,
             'data': response.data,
             'error': None,
         })
@@ -89,7 +89,7 @@ class RegisterViewSet(viewsets.ModelViewSet):
         resp = ResponseSerializer({
             'code': 201,
             'status': 'success',
-            'recordsTotal': 1,
+            'records_total': 1,
             'data': {
                 "message": "User created successfully"
             },

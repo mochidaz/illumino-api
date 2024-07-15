@@ -19,7 +19,7 @@ def jwt_exception_handler(request, exc):
     response = ResponseSerializer({
         'code': 401,
         'status': 'AUTHENTICATION_ERROR',
-        'recordsTotal': 0,
+        'records_total': 0,
         'data': None,
         'error': GenericErrorSerializer({
             'name': exc.__class__.__name__,
@@ -49,7 +49,7 @@ def validation_exception_handler(request, exc: ValidationError):
     response = ResponseSerializer({
         'code': 400,
         'status': 'VALIDATION_ERROR',
-        'recordsTotal': 0,
+        'records_total': 0,
         'error': GenericErrorSerializer({
             'name': exc.__class__.__name__,
             'message': exc.default_detail if hasattr(exc, 'default_detail') else exc,
@@ -72,7 +72,7 @@ def server_error_exception_handler(request, exc):
         response = ResponseSerializer({
             'code': 400,
             'status': 'VALIDATION_ERROR',
-            'recordsTotal': 0,
+            'records_total': 0,
             'error': GenericErrorSerializer({
                 'name': "ValidationError",
                 'message': 'Invalid input.',
@@ -85,7 +85,7 @@ def server_error_exception_handler(request, exc):
     response = ResponseSerializer({
         'code': 500,
         'status': 'SERVER_ERROR',
-        'recordsTotal': 0,
+        'records_total': 0,
         'error': GenericErrorSerializer({
             'name': exc.__class__.__name__,
             'message': exc.__str__(),
@@ -100,7 +100,7 @@ def unauthorized_exception_handler(request, exc):
     response = ResponseSerializer({
         'code': 401,
         'status': 'UNAUTHORIZED',
-        'recordsTotal': 0,
+        'records_total': 0,
         'error': GenericErrorSerializer({
             'name': exc.__class__.__name__,
             'message': exc.detail,
@@ -115,7 +115,7 @@ def not_found_exception_handler(request, exc):
     response = ResponseSerializer({
         'code': 404,
         'status': 'NOT_FOUND',
-        'recordsTotal': 0,
+        'records_total': 0,
         'error': GenericErrorSerializer({
             'name': exc.__class__.__name__,
             'message': exc.__str__(),
@@ -130,7 +130,7 @@ def method_not_allowed_exception_handler(request, exc):
     response = ResponseSerializer({
         'code': 405,
         'status': 'METHOD_NOT_ALLOWED',
-        'recordsTotal': 0,
+        'records_total': 0,
         'error': GenericErrorSerializer({
             'name': exc.__class__.__name__,
             'message': exc.detail,
@@ -145,7 +145,7 @@ def bad_request_exception_handler(request, exc):
     response = ResponseSerializer({
         'code': 400,
         'status': 'BAD_REQUEST',
-        'recordsTotal': 0,
+        'records_total': 0,
         'error': GenericErrorSerializer({
             'name': exc.__class__.__name__,
             'message': exc.__str__(),

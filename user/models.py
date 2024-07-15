@@ -30,3 +30,12 @@ class User(AbstractBaseUser):
     objects = UserManager()
 
     USERNAME_FIELD = 'email'
+
+    def is_member(self):
+        return self.role_id == "Member"
+
+    def is_superuser(self):
+        return self.role_id == "Superuser"
+
+    def is_staff(self):
+        return self.role_id == "Staff"
