@@ -25,6 +25,8 @@ class User(AbstractBaseUser):
 
     role_id = models.CharField(max_length=255)
 
-    manager = UserManager()
+    active = models.BooleanField(default=True)
+
+    objects = UserManager()
 
     USERNAME_FIELD = 'email'

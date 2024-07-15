@@ -17,6 +17,8 @@ from pathlib import Path
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
+APPEND_SLASH = False
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
@@ -144,7 +146,7 @@ REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ],
-    'EXCEPTION_HANDLER': 'common.exceptions.global_exception_handler',
+    'EXCEPTION_HANDLER': 'common.exceptions.exceptions.global_exception_handler',
     'DATETIME_FORMAT': '%Y-%m-%dT%H:%M:%S',
     'DATE_FORMAT': "%Y-%m-%d",
     'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend']
