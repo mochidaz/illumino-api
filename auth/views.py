@@ -18,6 +18,7 @@ class JWTObtainPairSerializer(TokenObtainPairSerializer):
     def get_token(cls, user: User):
         token = super().get_token(user)
         token['email'] = user.email
+        token['role'] = user.role
         return token
 
 
@@ -44,6 +45,7 @@ class JwtObtain(TokenObtainPairView):
         response = super().post(request, *args, **kwargs)
 
         response.data['email'] = user.email
+        response.data['role'] = user.role
 
         serializer = ResponseSerializer({
             'code': 200,
