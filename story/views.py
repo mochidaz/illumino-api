@@ -1,7 +1,9 @@
 from django.shortcuts import render
 from rest_framework import viewsets
 from rest_framework.exceptions import ValidationError, NotFound
+from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
+from rest_framework_simplejwt.authentication import JWTAuthentication
 
 from auth.auth import IsNotMember
 from story.models import Story
@@ -14,6 +16,7 @@ class CMSStoryViewSet(viewsets.ModelViewSet):
     queryset = Story.objects.all()
     serializer_class = StorySerializer
     permission_classes = [IsNotMember]
+    authentication_classes = [JWTAuthentication]
 
     def create(self, request, *args, **kwargs):
         serializer = StorySerializer(data=request.data)
@@ -102,9 +105,28 @@ class CMSStoryViewSet(viewsets.ModelViewSet):
 
         return Response(serializer.data, status=200)
 
+    def update_view_count(self, request, *args, **kwargs):
+        story = self.get_object()
+        story.reader_count += 1
+        story.save()
+
+        serializer = ResponseSerializer({
+            'code': 200,
+            'status': 'success',
+            'records_total': 1,
+            'data': {
+                'message': 'Story view count updated successfully'
+            },
+            'error': None,
+        })
+
+        return Response(serializer.data, status=200)
+
 class PublicStoryViewSet(viewsets.ModelViewSet):
     queryset = Story.objects.filter()
     serializer_class = StorySerializer
+    permission_classes = [AllowAny]
+    authentication_classes = [JWTAuthentication]
 
     def list(self, request, *args, **kwargs):
         if request.query_params.get('id'):

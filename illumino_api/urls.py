@@ -23,6 +23,8 @@ from illumino_api import settings
 from auth.urls import urlpatterns as auth_urlpatterns
 from story.urls import urlpatterns_public as story_public_urlpatterns, urlpatterns_cms as story_cms_urlpatterns
 from song.urls import urlpatterns_public as song_public_urlpatterns, urlpatterns_cms as song_cms_urlpatterns
+from journal.urls import urlpatterns_journal
+from user.urls import urlpatterns_public as user_public_urlpatterns
 
 urlpatterns = [
     path('api', include([
@@ -42,6 +44,12 @@ urlpatterns = [
         ])),
         path('/song', include([
             path('', include(song_public_urlpatterns)),
+        ])),
+        path('/journal', include([
+            path('', include(urlpatterns_journal)),
+        ])),
+        path('/user', include([
+            path('', include(user_public_urlpatterns)),
         ])),
     ])),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

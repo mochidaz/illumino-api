@@ -9,6 +9,7 @@ class GenreSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class SongSerializer(serializers.ModelSerializer):
+    genre = GenreSerializer(source='genre_id', read_only=True)
     class Meta:
         model = Song
         fields = '__all__'

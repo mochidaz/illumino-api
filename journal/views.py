@@ -1,3 +1,92 @@
 from django.shortcuts import render
+from rest_framework import viewsets
+from rest_framework.exceptions import ValidationError
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+from rest_framework_simplejwt.authentication import JWTAuthentication
 
-# Create your views here.
+from common.serializers.generic_serializer import ResponseSerializer
+from journal.models import Journal
+from journal.serializers import JournalSerializer
+
+
+class JournalViewSet(viewsets.ModelViewSet):
+    queryset = Journal.objects.all()
+    serializer_class = JournalSerializer
+    permission_classes = [IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
+
+    def create(self, request, *args, **kwargs):
+        serializer = JournalSerializer(data=request.data)
+
+        serializer.user = request.user
+
+        if not serializer.is_valid():
+            raise ValidationError(serializer.errors)
+
+        serializer.save()
+
+        serializer = ResponseSerializer({
+            'code': 201,
+            'status': 'success',
+            'records_total': 1,
+            'data': {
+                'message': 'Journal created successfully'
+            },
+            'error': None,
+        })
+
+        return Response(serializer.data, status=201)
+
+    def update(self, request, *args, **kwargs):
+        instance = self.get_object()
+        serializer = JournalSerializer(instance, data=request.data, partial=True)
+
+        if not serializer.is_valid():
+            raise ValidationError(serializer.errors)
+
+        serializer.save()
+
+        serializer = ResponseSerializer({
+            'code': 200,
+            'status': 'success',
+            'records_total': 1,
+            'data': {
+                'message': 'Journal updated successfully'
+            },
+            'error': None,
+        })
+
+        return Response(serializer.data, status=200)
+
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+        instance.delete()
+
+        serializer = ResponseSerializer({
+            'code': 200,
+            'status': 'success',
+            'records_total': 1,
+            'data': {
+                'message': 'Journal deleted successfully'
+            },
+            'error': None,
+        })
+
+        return Response(serializer.data, status=200)
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.filter_queryset(self.get_queryset())
+        queryset = queryset.filter(user=request.user)
+
+        journal_serializer = JournalSerializer(queryset, many=True)
+
+        serializer = ResponseSerializer({
+            'code': 200,
+            'status': 'success',
+            'records_total': len(journal_serializer.data),
+            'data': journal_serializer.data,
+            'error': None,
+        })
+
+        return Response(serializer.data)

@@ -7,13 +7,14 @@ class UserManager(BaseUserManager):
         if not email:
             raise ValueError('The Email field must be set')
         email = self.normalize_email(email)
+        role = "Superuser"
         user = self.model(email=email, **extra_fields)
         user.set_password(password)
         user.save(using=self._db)
         return user
 
     def create_superuser(self, email, password=None, **extra_fields):
-        extra_fields.setdefault('role_id', "Superuser")
+        extra_fields.setdefault('role', "Superuser")
         return self.create_user(email, password, **extra_fields)
 
 
@@ -23,7 +24,7 @@ class User(AbstractBaseUser):
     password = models.CharField(max_length=255)
     created_at = models.DateTimeField(auto_now_add=True)
 
-    role_id = models.CharField(max_length=255)
+    role = models.CharField(max_length=255, default="Member")
 
     active = models.BooleanField(default=True)
 
@@ -32,10 +33,10 @@ class User(AbstractBaseUser):
     USERNAME_FIELD = 'email'
 
     def is_member(self):
-        return self.role_id == "Member"
+        return self.role == "Member"
 
     def is_superuser(self):
-        return self.role_id == "Superuser"
+        return self.role == "Superuser"
 
     def is_staff(self):
-        return self.role_id == "Staff"
+        return self.role == "Staff"

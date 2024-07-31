@@ -201,6 +201,8 @@ class CMSSongViewSet(viewsets.ModelViewSet):
 class PublicGenreViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Genre.objects.all()
     serializer_class = GenreSerializer
+    permission_classes = [AllowAny]
+    authentication_classes = [JWTAuthentication]
 
     def list(self, request, *args, **kwargs):
         queryset = self.filter_queryset(self.get_queryset())
