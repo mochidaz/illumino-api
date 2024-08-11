@@ -152,8 +152,13 @@ class CMSSongViewSet(viewsets.ModelViewSet):
         return Response(response_serializer.data, status=200)
 
     def destroy(self, request, *args, **kwargs):
-        instance = self.get_object()
-        instance.delete()
+        if request.query_params.get('id'):
+            song = Song.objects.filter(id=request.query_params.get('id'))
+
+            if not song.exists():
+                raise NotFound('Song not found')
+
+            song.delete()
 
         response_serializer = ResponseSerializer({
             'code': 200,
