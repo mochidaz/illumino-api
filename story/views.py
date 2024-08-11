@@ -60,8 +60,13 @@ class CMSStoryViewSet(viewsets.ModelViewSet):
         return Response(serializer.data, status=200)
 
     def destroy(self, request, *args, **kwargs):
-        instance = self.get_object()
-        instance.delete()
+        if request.query_params.get('id'):
+            story = Story.objects.filter(id=request.query_params.get('id'))
+
+            if not story.exists():
+                raise NotFound('Story not found')
+
+            story.delete()
 
         serializer = ResponseSerializer({
             'code': 200,

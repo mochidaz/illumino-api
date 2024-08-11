@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from rest_framework import viewsets
-from rest_framework.exceptions import ValidationError
+from rest_framework.exceptions import ValidationError, NotFound
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework_simplejwt.authentication import JWTAuthentication
@@ -60,8 +60,13 @@ class JournalViewSet(viewsets.ModelViewSet):
         return Response(serializer.data, status=200)
 
     def destroy(self, request, *args, **kwargs):
-        instance = self.get_object()
-        instance.delete()
+        if request.query_params.get('id'):
+            journal = Journal.objects.filter(id=request.query_params.get('id'))
+
+            if not journal.exists():
+                raise NotFound('Journal not found')
+
+            journal.delete()
 
         serializer = ResponseSerializer({
             'code': 200,
