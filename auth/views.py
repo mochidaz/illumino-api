@@ -77,8 +77,6 @@ class RefreshToken(TokenRefreshView):
 
 class RegisterViewSet(viewsets.ModelViewSet):
     serializer_class = UserSerializer
-    permission_classes = [IsNotMember]
-    authentication_classes = [JWTAuthentication]
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
