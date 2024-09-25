@@ -229,6 +229,22 @@ class PublicSongViewSet(viewsets.ReadOnlyModelViewSet):
     permission_classes = [AllowAny]
 
     def list(self, request, *args, **kwargs):
+        if request.query_params.get('id'):
+            songs = Song.objects.filter(id=request.query_params.get('id'))
+
+            if not songs.exists():
+                raise NotFound('Song not found')
+
+            serializer = ResponseSerializer({
+                'code': 200,
+                'status': 'success',
+                'records_total': 1,
+                'data': SongSerializer(songs.first()).data,
+                'error': None,
+            })
+
+            return Response(serializer.data, status=200)
+
         queryset = self.filter_queryset(self.get_queryset())
         serializer = SongSerializer(queryset, many=True)
 
