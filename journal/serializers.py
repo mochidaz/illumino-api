@@ -5,7 +5,7 @@ from user.serializers import UserSerializer
 
 
 class JournalSerializer(serializers.ModelSerializer):
-    user = UserSerializer(source='user_id', read_only=True)
+    author = UserSerializer(source='user_id', read_only=True)
 
     class Meta:
         model = Journal

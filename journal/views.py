@@ -81,15 +81,33 @@ class JournalViewSet(viewsets.ModelViewSet):
         return Response(serializer.data, status=200)
 
     def list(self, request, *args, **kwargs):
+        if request.query_params.get('id'):
+            journals = Journal.objects.filter(id=request.query_params.get('id'))
+
+            if not journals.exists():
+                raise NotFound('Journal not found')
+
+            journal_serializer = JournalSerializer(journals)
+
+            serializer = ResponseSerializer({
+                'code': 200,
+                'status': 'success',
+                'records_total': 1,
+                'data': journal_serializer.data,
+                'error': None,
+            })
+
+            return Response(serializer.data)
+
         queryset = self.filter_queryset(self.get_queryset())
-        queryset = queryset.filter(user=request.user)
+        queryset = queryset.filter(author=request.user)
 
         journal_serializer = JournalSerializer(queryset, many=True)
 
         serializer = ResponseSerializer({
             'code': 200,
             'status': 'success',
-            'records_total': len(journal_serializer.data),
+            'records_total': queryset.count(),
             'data': journal_serializer.data,
             'error': None,
         })
