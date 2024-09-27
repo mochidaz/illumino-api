@@ -17,9 +17,11 @@ class JournalViewSet(viewsets.ModelViewSet):
     authentication_classes = [JWTAuthentication]
 
     def create(self, request, *args, **kwargs):
-        serializer = JournalSerializer(data=request.data)
-
-        serializer.author = request.user
+        serializer = JournalSerializer(data={
+            'title': request.data.get('title'),
+            'content': request.data.get('content'),
+            'author_id': request.user.id
+        })
 
         if not serializer.is_valid():
             raise ValidationError(serializer.errors)
@@ -100,7 +102,7 @@ class JournalViewSet(viewsets.ModelViewSet):
             return Response(serializer.data)
 
         queryset = self.filter_queryset(self.get_queryset())
-        queryset = queryset.filter(author=request.user)
+        queryset = queryset.filter(author_id=request.user.id)
 
         journal_serializer = JournalSerializer(queryset, many=True)
 
