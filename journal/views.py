@@ -19,7 +19,7 @@ class JournalViewSet(viewsets.ModelViewSet):
     def create(self, request, *args, **kwargs):
         serializer = JournalSerializer(data=request.data)
 
-        serializer.user = request.user
+        serializer.author = request.user
 
         if not serializer.is_valid():
             raise ValidationError(serializer.errors)
