@@ -39,13 +39,15 @@ class CMSStoryViewSet(viewsets.ModelViewSet):
         return Response(serializer.data, status=201)
 
     def update(self, request, *args, **kwargs):
-        instance = self.get_object()
-        serializer = StorySerializer(instance, data=request.data, partial=True)
+        if request.query_params.get('id'):
+            instance = Story.objects.get(id=request.query_params.get('id'))
 
-        if not serializer.is_valid():
-            raise ValidationError(serializer.errors)
+            serializer = StorySerializer(instance, data=request.data, partial=True)
 
-        serializer.save()
+            if not serializer.is_valid():
+                raise ValidationError(serializer.errors)
+
+            serializer.save()
 
         serializer = ResponseSerializer({
             'code': 200,
@@ -61,10 +63,7 @@ class CMSStoryViewSet(viewsets.ModelViewSet):
 
     def destroy(self, request, *args, **kwargs):
         if request.query_params.get('id'):
-            story = Story.objects.filter(id=request.query_params.get('id'))
-
-            if not story.exists():
-                raise NotFound('Story not found')
+            story = Story.objects.get(id=request.query_params.get('id'))
 
             story.delete()
 

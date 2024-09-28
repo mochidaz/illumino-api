@@ -131,13 +131,15 @@ class CMSSongViewSet(viewsets.ModelViewSet):
         return Response(response_serializer.data, status=201)
 
     def update(self, request, *args, **kwargs):
-        instance = self.get_object()
-        serializer = SongSerializer(instance, data=request.data, partial=True)
+        if request.query_params.get('id'):
+            instance = Song.objects.get(id=request.query_params.get('id'))
 
-        if not serializer.is_valid():
-            raise ValidationError(serializer.errors)
+            serializer = SongSerializer(instance, data=request.data, partial=True)
 
-        serializer.save()
+            if not serializer.is_valid():
+                raise ValidationError(serializer.errors)
+
+            serializer.save()
 
         response_serializer = ResponseSerializer({
             'code': 200,
@@ -153,10 +155,7 @@ class CMSSongViewSet(viewsets.ModelViewSet):
 
     def destroy(self, request, *args, **kwargs):
         if request.query_params.get('id'):
-            song = Song.objects.filter(id=request.query_params.get('id'))
-
-            if not song.exists():
-                raise NotFound('Song not found')
+            song = Song.objects.get(id=request.query_params.get('id'))
 
             song.delete()
 
